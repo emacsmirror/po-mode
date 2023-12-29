@@ -477,6 +477,11 @@ or remove the -m if you are not using the GNU version of 'uuencode'."
   :type 'string
   :group 'po)
 
+(defcustom po-close-frame-on-subedit-abort t
+  "Close the frame with the buffer after editing a translation."
+  :type 'boolean
+  :group 'po)
+
 (defvar po-subedit-mode-syntax-table
   (copy-syntax-table text-mode-syntax-table)
   "Syntax table used while in PO mode.")
@@ -2134,7 +2139,8 @@ When done with the `ediff' session press \\[exit-recursive-edit] exit to
          (entry-buffer (marker-buffer entry-marker)))
     (if (null entry-buffer)
         (error (_"Corresponding PO buffer does not exist anymore"))
-      (or (one-window-p) (delete-window))
+      (when po-close-frame-on-subedit-abort
+        (or (one-window-p) (delete-window)))
       (switch-to-buffer entry-buffer)
       (goto-char entry-marker)
       (and overlay-info (po-dehighlight overlay-info))
